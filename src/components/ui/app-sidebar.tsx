@@ -1,4 +1,5 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { NavLink } from "react-router-dom";
+import { Calendar, Home, Inbox, Search, Settings, ShoppingCart } from "lucide-react";
 
 import {
   Sidebar,
@@ -9,7 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "./sidebar"
+} from "./sidebar";
 
 // Menu items.
 const items = [
@@ -20,30 +21,30 @@ const items = [
   },
   {
     title: "Ingreso de Personal",
-    url: "#",
+    url: "/admin/IngresoPersonal",
     icon: Inbox,
   },
   {
     title: "Carga de Medicamentos",
-    url: "#",
+    url: "/admin/carga-medicamentos",
     icon: Calendar,
   },
   {
     title: "Laboratorios Proveedores",
-    url: "#",
+    url: "/admin/laboratorios",
     icon: Search,
   },
   {
     title: "Sucursales",
-    url: "#",
+    url: "/admin/sucursales",
     icon: Settings,
   },
   {
     title: "Compras",
-    url: "#",
-    icon: Settings,
+    url: "/admin/compras",
+    icon: ShoppingCart,
   },
-]
+];
 
 export function AppSidebar() {
   return (
@@ -56,10 +57,16 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
+                    <NavLink
+                      to={item.url}
+                      className={({ isActive }) =>
+                        `flex items-center gap-2 p-2 rounded ${isActive ? "bg-gray-200 font-semibold" : "hover:bg-gray-100"
+                        }`
+                      }
+                    >
+                      <item.icon size={20} />
                       <span>{item.title}</span>
-                    </a>
+                    </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -68,6 +75,6 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }
 

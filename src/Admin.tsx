@@ -9,11 +9,14 @@ import Compras from "./CRUD/Compras.tsx";
 
 function Admin() {
   return (
-    <div>
-      <DashboardSidebar />
-      <div className="flex-1 p-6">
+    <div className="flex">
+      <div className="h-screen">
+        <DashboardSidebar />
+      </div>
+      <div className="flex-grow p-6 mx-20">
         <Routes>
-          <Route path="/" element={<IngresoPersonal />} />
+          <Route path="/" element="Inicio" />
+          <Route path="IngresoPersonal" element={<IngresoPersonal />} />
           <Route path="carga-medicamentos" element={<CargaMedicamentos />} />
           <Route path="laboratorios" element={<Laboratorios />} />
           <Route path="sucursales" element={<Sucursales />} />
