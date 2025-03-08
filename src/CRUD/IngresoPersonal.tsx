@@ -6,11 +6,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../components/ui/table"
+} from "../components/ui/table";
 
 const personal = [
   {
-    codigo: "001",
+    codigo: 1,
     Nombre: "Miguel",
     Apellido: "Nuñez",
     Sucursal: "Puerto Ordaz",
@@ -18,34 +18,39 @@ const personal = [
   },
 
   {
-    codigo: "002",
+    codigo: "2",
     Nombre: "Miguel",
     Apellido: "Nuñez",
     Sucursal: "Puerto Ordaz",
     Ficha: "Ver Ficha",
   },
   {
-    codigo: "003",
+    codigo: "3",
     Nombre: "Miguel",
     Apellido: "Nuñez",
     Sucursal: "Puerto Ordaz",
     Ficha: "Ver Ficha",
   },
   {
-    codigo: "004",
+    codigo: "4",
     Nombre: "Miguel",
     Apellido: "Nuñez",
     Sucursal: "Puerto Ordaz",
     Ficha: "Ver Ficha",
   },
-]
+];
+
+import { Personal } from "../types";
+import FormularioPersonal from "../components/FormularioPersonal";
 
 function IngresoPersonal() {
+  const handlePersonalAdded = (nuevoPersonal: Personal) => {
+    console.log("Nuevo personal añadido:", nuevoPersonal);
+  };
   return (
     <div className="text-center">
       <h1>Personal Registrado</h1>
       <Table className="w-full table-auto">
-
         <TableCaption>A list of your recent invoices.</TableCaption>
         <TableHeader>
           <TableRow>
@@ -68,6 +73,10 @@ function IngresoPersonal() {
           ))}
         </TableBody>
       </Table>
+
+      <h2>Ingreso de Personal</h2>
+      <FormularioPersonal onPersonalAdded={handlePersonalAdded} />
+
       {/* Aquí va el contenido de tu panel de administración */}
     </div>
   );
