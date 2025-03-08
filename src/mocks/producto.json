@@ -1,0 +1,26 @@
+[
+  {
+    "id": 2,
+    "name": "Vitamina C",
+    "description": "500mg x 100 tabletas",
+    "quantity": 50,
+    "laboratory": "Genfar",
+    "price": 8
+  },
+  {
+    "id": 3,
+    "name": "Omega 3",
+    "description": "1000mg x 90 cápsulas blandas",
+    "quantity": 30,
+    "laboratory": "Naturalife",
+    "price": 25
+  },
+  {
+    "id": 4,
+    "name": "Multivitamínico",
+    "description": "Cápsulas diarias x 30",
+    "quantity": 40,
+    "laboratory": "Supradyn",
+    "price": 12
+  }
+]
