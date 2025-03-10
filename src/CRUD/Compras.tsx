@@ -184,7 +184,6 @@ function Compras() {
           ))}
         </TableBody>
       </Table>
-      {/* Aquí va el contenido de tu panel de administración */}
     </div>
   );
 }
