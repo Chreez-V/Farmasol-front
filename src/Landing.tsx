@@ -13,7 +13,7 @@ function Landing() {
             <img src="img/Logo.png" alt="Logo Farmasol" />
             <div className="space-x-4">
 
-              <Link to="/admin">
+              <Link to="/admin/IngresoPersonal">
                 <Button variant="outline">
                   Admin
                 </Button>

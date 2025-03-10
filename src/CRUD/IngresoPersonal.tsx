@@ -25,70 +25,88 @@ import {
 } from "../components/ui/form"
 import { Input } from "../components/ui/input"
 
+import { useEffect, useState } from "react";
+
+interface Empleado {
+  idempleado: number;
+  nombre: string;
+  apellido: string;
+  telefono: string;
+  email: string;
+  direccion: string;
+}
+
+
 const formSchema = z.object({
+  idempleado: z.string().transform((val) => parseInt(val, 10) || 0),
   nombre: z.string().min(2, {
     message: "El nombre debe tener al menos 2 letras.",
   }),
   apellido: z.string().min(2, {
     message: "El apellido debe tener al menos 2 letras.",
   }),
-  telefono: z.number().lte(10),
+  telefono: z.string().max(15),
   direccion: z.string().min(2),
   email: z.string().min(2),
-  cargo: z.string().min(2),
 })
 
-const personal = [
-  {
-    codigo: 1,
-    Nombre: "Miguel",
-    Apellido: "Nuñez",
-    Sucursal: "Puerto Ordaz",
-    Ficha: "Ver Ficha",
-  },
-
-  {
-    codigo: "2",
-    Nombre: "Miguel",
-    Apellido: "Nuñez",
-    Sucursal: "Puerto Ordaz",
-    Ficha: "Ver Ficha",
-  },
-  {
-    codigo: "3",
-    Nombre: "Miguel",
-    Apellido: "Nuñez",
-    Sucursal: "Puerto Ordaz",
-    Ficha: "Ver Ficha",
-  },
-  {
-    codigo: "4",
-    Nombre: "Miguel",
-    Apellido: "Nuñez",
-    Sucursal: "Puerto Ordaz",
-    Ficha: "Ver Ficha",
-  },
-];
-
-import { Personal } from "../types";
-import FormularioPersonal from "../components/FormularioPersonal";
 
 
-function onSubmit(values: z.infer<typeof formSchema>) {
-  console.log(values)
-}
 
 function IngresoPersonal() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       nombre: "",
+      apellido: "",
+      telefono: "",
+      direccion: "",
+      email: "",
     },
   });
-  const handlePersonalAdded = (nuevoPersonal: Personal) => {
-    console.log("Nuevo personal añadido:", nuevoPersonal);
 
+  //Añadir personal a la tabla
+
+  const [empleado, setEmpleado] = useState<Empleado[]>([]);
+
+  // Función para obtener datos de la API
+  const fetchEmpleado = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/api/empleado"); // Ajusta la URL según tu backend
+      setEmpleado(response.data); // Asigna los datos obtenidos al estado
+    } catch (error) {
+      console.error("Error obteniendo datos:", error);
+    }
   };
+
+  // Cargar los datos cuando el componente se monta
+  useEffect(() => {
+    fetchEmpleado();
+  }, []);
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log("Datos enviados:", values); // <-- Añadir este console.log
+    try {
+      const response = await axios.post("http://localhost:4000/api/empleado", values);
+      console.log("Empleado registrado:", response.data);
+
+      fetchEmpleado(); // Recargar la lista de empleados
+      form.reset();
+    } catch (error) {
+      console.error("Error al registrar empleado:", error);
+    }
+  };
+
+  const deleteEmpleado = async (idempleado: number) => {
+    try {
+      await axios.delete(`http://localhost:4000/api/empleado/${idempleado}`);
+      console.log("Empleado eliminado:", idempleado);
+      fetchEmpleado(); // Recargar la lista actualizada después de eliminar
+    } catch (error) {
+      console.error("Error al eliminar empleado:", error);
+    }
+  };
+
   return (
     <div className="text-center">
       <div>
@@ -96,6 +114,21 @@ function IngresoPersonal() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex-col py-5 space-y-2 ">
 
+            <div className="w-full">
+              <FormField
+                control={form.control}
+                name="idempleado"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>codigo</FormLabel>
+                    <FormControl>
+                      <Input className="w-full" placeholder="Ingrese el nombre" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <div className="flex space-x-4">
               <div className="w-full">
                 <FormField
@@ -118,9 +151,9 @@ function IngresoPersonal() {
                   name="apellido"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Telefono</FormLabel>
+                      <FormLabel>Apellido</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ingrese el numero de telefono" {...field} />
+                        <Input placeholder="Ingrese el apellido" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -164,12 +197,12 @@ function IngresoPersonal() {
               <div className="w-full">
                 <FormField
                   control={form.control}
-                  name="cargo"
+                  name="direccion"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Cargo</FormLabel>
+                      <FormLabel>Direccion</FormLabel>
                       <FormControl>
-                        <Input className="w-full" placeholder="Ingrese el cargo del empleado" {...field} />
+                        <Input className="w-full" placeholder="Ingrese Direccion del empleado" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -188,28 +221,32 @@ function IngresoPersonal() {
         <h1>Personal Registrado</h1>
         <Table className="w-full table-auto">
 
-          <TableCaption>A list of your recent invoices.</TableCaption>
+          <TableCaption>Lista de empleados.</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead className="text-center">Codigo</TableHead>
               <TableHead className="text-center">Nombre</TableHead>
               <TableHead className="text-center">Apellido</TableHead>
-              <TableHead className="text-center">Sucursal</TableHead>
-              <TableHead className="text-right">Ficha</TableHead>
+              <TableHead className="text-center">Telefono</TableHead>
+              <TableHead className="text-center">Email</TableHead>
+              <TableHead className="text-center">Direccion</TableHead>
+              <TableHead className="text-center">Ficha</TableHead>
               <TableHead className="text-center">Editar</TableHead>
               <TableHead className="text-center">Eliminar</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {personal.map((codigo) => (
-              <TableRow key={codigo.codigo}>
-                <TableCell className="font-medium">{codigo.codigo}</TableCell>
-                <TableCell>{codigo.Nombre}</TableCell>
-                <TableCell>{codigo.Apellido}</TableCell>
-                <TableCell>{codigo.Sucursal}</TableCell>
-                <TableCell className="text-right">{codigo.Ficha}</TableCell>
+            {empleado.map((empleado) => (
+              <TableRow key={empleado.idempleado}>
+                <TableCell className="font-medium">{empleado.idempleado}</TableCell>
+                <TableCell>{empleado.nombre}</TableCell>
+                <TableCell>{empleado.apellido}</TableCell>
+                <TableCell>{empleado.telefono}</TableCell>
+                <TableCell>{empleado.email}</TableCell>
+                <TableCell>{empleado.direccion}</TableCell>
+                <TableCell><Button>VerFicha</Button></TableCell>
                 <TableCell><Button>Editar</Button></TableCell>
-                <TableCell><Button>Eliminar</Button></TableCell>
+                <TableCell><Button onClick={() => deleteEmpleado(empleado.idempleado)} >Eliminar</Button></TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -217,7 +254,7 @@ function IngresoPersonal() {
         {/* Aquí va el contenido de tu panel de administración */}
       </div>
 
-      </div>
+    </div>
   );
 }
 
